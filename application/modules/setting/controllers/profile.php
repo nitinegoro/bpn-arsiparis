@@ -34,7 +34,7 @@ class Profile extends CI_Controller {
         $config['total_rows'] = $total_rows;
         $this->pagination->initialize($config);
 
-		$data_history = $this->db->query("SELECT tb_history.*, tb_buku_tanah.* FROM tb_history JOIN tb_buku_tanah ON tb_history.id_bukutanah = tb_buku_tanah.id_bukutanah WHERE tb_history.nip = '{$this->nip}' LIMIT {$config['per_page']} OFFSET {$page}")->result();
+		$data_history = $this->db->query("SELECT tb_history.*, tb_buku_tanah.* FROM tb_history JOIN tb_buku_tanah ON tb_history.id_bukutanah = tb_buku_tanah.id_bukutanah WHERE tb_history.nip = '{$this->nip}'  ORDER BY tb_history.time DESC LIMIT {$config['per_page']} OFFSET {$page}")->result();
 		$data = array(
 			'title' => 'My Akun'.DEFAULT_TITLE, 
 			'data' => $data_user,

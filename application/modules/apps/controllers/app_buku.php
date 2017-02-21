@@ -183,9 +183,9 @@ class App_buku extends CI_Controller {
 		);
 		// Query Pencarian Data Buku Tanah
 		if($where['hak']==5) :
-			$query = $this->db->query("SELECT * FROM tb_buku_tanah WHERE id_hak = '{$where['hak']}' AND no_hakbuku = '{$where['nohak']}' AND tahun = '{$where['thn']}'");
+			$query = $this->db->query("SELECT * FROM tb_buku_tanah WHERE id_hak = '{$where['hak']}' AND no_hakbuku = '{$where['nohak']}' AND tahun = '{$where['thn']}' AND status_entry = 'Y'");
 		else :
-			$query = $this->db->query("SELECT * FROM tb_buku_tanah WHERE id_hak = '{$where['hak']}' AND no_hakbuku = '{$where['nohak']}' AND id_desa = '{$where['desa']}'");
+			$query = $this->db->query("SELECT * FROM tb_buku_tanah WHERE id_hak = '{$where['hak']}' AND no_hakbuku = '{$where['nohak']}' AND id_desa = '{$where['desa']}' AND status_entry = 'Y'");
 		endif;
 		if(!$query) :
 			$storage = false;
@@ -334,7 +334,7 @@ class App_buku extends CI_Controller {
 			'deskripsi' => "Menghapus dokumen.",
 		);
 		$this->db->insert('tb_history', $data_history);
-/*		// Hapus File Dokumen
+		// Hapus File Dokumen
 		$data_file_buku = $this->db->query("SELECT * FROM tb_file_buku WHERE id_bukutanah = '{$ID}'")->result();
 		foreach($data_file_buku as $row) :
 			@unlink("./assets/files/{$row->nama_file}");
@@ -350,7 +350,7 @@ class App_buku extends CI_Controller {
 		$tables2 = array('tb_warkah', 'tb_file_warkah','tb_simpan_warkah', 'tb_pinjam_warkah');
 		$this->db->where('id_warkah', $row->id_warkah);
 		$this->db->delete($tables2);
-		redirect("buku/search");*/
+		redirect("buku/search");
 		$this->trash->delete($ID,'all');
 		
 		$session = $this->session->userdata('login');

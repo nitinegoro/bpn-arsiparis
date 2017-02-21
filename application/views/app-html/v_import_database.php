@@ -8,15 +8,19 @@
 
                   </div><!-- /.box-tools -->
                 </div><!-- /.box-header -->
-                <form action="<?php echo site_url('apps/export/insert_database') ?>" id="import_database" method="post" enctype="multipart/form-data">
+                <!-- id="import_database" -->
+                <form action="<?php echo site_url('apps/export/insert_database') ?>"  method="post" enctype="multipart/form-data">
                 <div class="box-body">
                   <div class="row">
-                    <div class="col-md-12" id="upload_load"></div>
+                    <div class="col-md-12">
+                      <?php echo $this->session->flashdata('alert'); ?>
+
+                    </div>
                     <div class="col-md-12 form-horizontal">
                       <div class="form-group">
                         <label class="col-sm-3 control-label">File SQL : <strong class="text-red">*</strong></label>
                         <div class="col-sm-6">
-                          <input type="file" id="file" name="file" class="form-control">
+                          <input type="file" id="file" name="file_sql" class="form-control" required="">
                           <p class="help-block"><strong class="text-red">* </strong><small>File SQL extensi : .sql </small></p>
                         </div>
                       </div>

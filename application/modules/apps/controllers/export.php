@@ -26,7 +26,7 @@ class Export extends CI_Controller {
 		$this->nip = $data_session['nip'];
 		$this->load->library(array('session','upload','encrypt','Excel/PHPExcel','PHPExcel/IOFactory','user_agent'));
 		$this->load->model(array('m_apps','m_buku','m_warkah','m_backup','m_laporan'));
-		$this->load->helper(array('form','url','html'));
+		$this->load->helper(array('form','url','html','file'));
 		$this->load->dbutil();
 	}
 
@@ -145,18 +145,22 @@ class Export extends CI_Controller {
 	 **/
 	public function insert_database()
 	{
-/*		if($this->agent->platform() == 'linux')
-			chmod("/opt/lampp/htdocs/assets", 777); */
-		$media = $this->upload->data('file');
-        $fileName = $media['file_name'];
-        $config['upload_path'] = './assets/backup_db/'; 
-        $config['file_name'] = $fileName;
-        $config['allowed_types'] = 'sql|SQL';
+		$config['upload_path'] = './assets/backup_db'; 
+		$config['allowed_types'] = 'sql';
+		$config['max_size'] = 10000;
+		$this->upload->initialize($config);
+		
+		if ( ! $this->upload->do_upload('file_sql'))
+		{
+			$code = '<div class="alert alert-warning">'."\n".'<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'."\n".$this->upload->display_errors()."\n".'</div>';
+			$this->session->set_flashdata('alert', $code);
+			redirect(site_url('apps/export/import_database'));
+		} else {
+			$code = '<div class="alert alert-success">'."\n".'<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'."\n".'Berhasil mengimport sql. ...'."\n".'</div>';
+			$this->session->set_flashdata('alert', $code);
+			redirect(site_url('apps/export/import_database'));
+		}
 
-        $this->upload->initialize($config);
-        if( ! $this->upload->do_upload('file') ) :
-			echo json_encode(array('status'=>false, 'error' => 'Mengaploud File'));
-        endif;
         // read derectory and file name
         $inputFileName = './assets/backup_db/'.$this->upload->file_name;
         // loaded file
@@ -166,13 +170,37 @@ class Export extends CI_Controller {
 		$sqls = explode(';', $file_restore);
 		array_pop($sqls);
 
-		foreach($sqls as $statement) :
+		foreach($sqls as $statement) 
+		{
 		    $statment = $statement . ";";
-		    $this->db->query($statement);   
-		endforeach;
+		    $this->db->query($statement); 
+		}  
+
 		@unlink($inputFileName);
-		echo json_encode(array('status'=>true), JSON_PRETTY_PRINT);
-		//$this->output->set_content_type('application/json')->set_output(json_encode(array('status'=>true), JSON_PRETTY_PRINT));
+	}
+
+	public function test()
+	{
+        $inputFileName = './assets/backup_db/database_sim_bpn.sql';
+        // loaded file
+		$file_restore = $this->load->file($inputFileName, true);
+		$file_array = explode(';', $file_restore);
+
+		$sqls = explode(';', $file_restore);
+		array_pop($sqls);
+
+		foreach($sqls as $statement) 
+		{
+			$statment = $statement . ";";
+			//echo $statment."<hr>";
+		}
+
+		echo "<pre>";
+		$test = get_mime_by_extension(FCPATH.'assets\backup_db\database_sim_bpn.sql');
+
+		print_r($test);
+
+		//echo FCPATH.'assets\backup_db\database_sim_bpn.sql';
 	}
 
 	/**
@@ -337,12 +365,6 @@ class Export extends CI_Controller {
 	}
 
 
-	public function test()
-	{
-		foreach($this->m_backup->warkah_keluar() as $row) :
-			echo $row->nama_lengkap;
-		endforeach;
-	}
 }
 
 /* End of file Export.php */

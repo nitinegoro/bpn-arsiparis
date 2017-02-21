@@ -61,9 +61,7 @@ $data_user = $this->db->query("SELECT * FROM tb_users WHERE nip = '{$session['ni
                   </div>
                   <?php } else {  foreach($this->m_apps->getbukuPending() as $row) { ?>
                   <li>
-                    <ul class="menu">
-                      <li><a href="#" onclick="get_buku_masuk('<?php echo $row->id_bukutanah; ?>');">No. Hak : <?php echo $row->no_hakbuku; ?></a></li>
-                    </ul>
+                     <a href="#" onclick="get_buku_masuk('<?php echo $row->id_bukutanah; ?>');">No. Hak : <?php echo $row->no_hakbuku; ?></a>
                   </li>
                   <?php }} ?>
                 </ul>
